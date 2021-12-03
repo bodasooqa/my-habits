@@ -23,7 +23,7 @@ class TabBarController: UITabBarController {
         super.init(nibName: nil, bundle: nil)
         
         setViewControllers(controllers, animated: false)
-        tabBar.tintColor = UIColor.init(named: "Purple")
+        tabBar.tintColor = .appPurple
         
         guard let tabItems = tabBar.items else {
             return

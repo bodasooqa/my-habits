@@ -21,6 +21,10 @@
 		C2272C2827558A51005C3CF4 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C2727558A51005C3CF4 /* InfoViewController.swift */; };
 		C2272C2A27558A5E005C3CF4 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C2927558A5E005C3CF4 /* InfoView.swift */; };
 		C2272C2D275595A0005C3CF4 /* HabitsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C2C275595A0005C3CF4 /* HabitsStore.swift */; };
+		C2272C2F275662F6005C3CF4 /* HabitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C2E275662F6005C3CF4 /* HabitTableViewCell.swift */; };
+		C2272C3127581806005C3CF4 /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C3027581806005C3CF4 /* HabitViewController.swift */; };
+		C2272C3327581AE9005C3CF4 /* HabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C3227581AE9005C3CF4 /* HabitView.swift */; };
+		C2272C35275AC1F5005C3CF4 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C34275AC1F4005C3CF4 /* UIColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +44,10 @@
 		C2272C2727558A51005C3CF4 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		C2272C2927558A5E005C3CF4 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		C2272C2C275595A0005C3CF4 /* HabitsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsStore.swift; sourceTree = "<group>"; };
+		C2272C2E275662F6005C3CF4 /* HabitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitTableViewCell.swift; sourceTree = "<group>"; };
+		C2272C3027581806005C3CF4 /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
+		C2272C3227581AE9005C3CF4 /* HabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitView.swift; sourceTree = "<group>"; };
+		C2272C34275AC1F4005C3CF4 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +101,7 @@
 			children = (
 				C2272C1C2754F864005C3CF4 /* UILabelExtension.swift */,
 				C2272C2427557471005C3CF4 /* UIViewExtension.swift */,
+				C2272C34275AC1F4005C3CF4 /* UIColorExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -102,6 +111,9 @@
 			children = (
 				C2272C2027556BA8005C3CF4 /* HabitsViewController.swift */,
 				C2272C2227556BB4005C3CF4 /* HabitsView.swift */,
+				C2272C2E275662F6005C3CF4 /* HabitTableViewCell.swift */,
+				C2272C3027581806005C3CF4 /* HabitViewController.swift */,
+				C2272C3227581AE9005C3CF4 /* HabitView.swift */,
 			);
 			path = Habits;
 			sourceTree = "<group>";
@@ -196,14 +208,18 @@
 			files = (
 				C2272C0B2754E553005C3CF4 /* ViewController.swift in Sources */,
 				C2272C2327556BB4005C3CF4 /* HabitsView.swift in Sources */,
+				C2272C35275AC1F5005C3CF4 /* UIColorExtension.swift in Sources */,
 				C2272C1B2754E9D8005C3CF4 /* TabBarController.swift in Sources */,
 				C2272C2D275595A0005C3CF4 /* HabitsStore.swift in Sources */,
 				C2272C1D2754F864005C3CF4 /* UILabelExtension.swift in Sources */,
 				C2272C2827558A51005C3CF4 /* InfoViewController.swift in Sources */,
+				C2272C3127581806005C3CF4 /* HabitViewController.swift in Sources */,
 				C2272C2127556BA8005C3CF4 /* HabitsViewController.swift in Sources */,
 				C2272C072754E553005C3CF4 /* AppDelegate.swift in Sources */,
 				C2272C2527557471005C3CF4 /* UIViewExtension.swift in Sources */,
 				C2272C2A27558A5E005C3CF4 /* InfoView.swift in Sources */,
+				C2272C3327581AE9005C3CF4 /* HabitView.swift in Sources */,
+				C2272C2F275662F6005C3CF4 /* HabitTableViewCell.swift in Sources */,
 				C2272C092754E553005C3CF4 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

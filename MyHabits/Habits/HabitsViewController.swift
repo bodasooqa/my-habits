@@ -9,10 +9,6 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
-    let habitsView = HabitsView()
-    
-    lazy var addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addSomething))
-    
     init() {
         super.init(nibName: nil, bundle: nil)
         title = "Привычки"
@@ -23,17 +19,24 @@ class HabitsViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        view.addSubview(habitsView)
-        habitsView.putIntoSafeArea(view: view)
+        super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = addBarButton
-        navigationController?.navigationBar.topItem?.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.topItem?.title = "Сегодня"
-        navigationController?.navigationBar.prefersLargeTitles = true
+        view = HabitsView()
+        
+        configureNavigationBar()
     }
     
-    @objc func addSomething() {
-        print("Added")
+    private func configureNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addHabit))
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.topItem?.title = "Сегодня"
+    }
+    
+    @objc private func addHabit() {
+        let navVC = UINavigationController(rootViewController: HabitViewController())
+        navVC.modalPresentationStyle = .fullScreen
+        present(navVC, animated: true, completion: nil)
     }
     
 }
