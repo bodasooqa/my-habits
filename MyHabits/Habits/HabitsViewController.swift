@@ -9,6 +9,9 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
+    lazy var habitViewController: HabitViewController = HabitViewController()
+    lazy var habitsView: HabitsView = HabitsView()
+    
     init() {
         super.init(nibName: nil, bundle: nil)
         title = "Привычки"
@@ -21,7 +24,13 @@ class HabitsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view = HabitsView()
+        view.addSubview(habitsView)
+        habitsView.putIntoSafeArea(view: view)
+        
+        habitViewController.saveCompletion = { [weak self] in
+            guard let self = self else { return }
+            self.habitsView.tableView.reloadData()
+        }
         
         configureNavigationBar()
     }
@@ -34,7 +43,7 @@ class HabitsViewController: UIViewController {
     }
     
     @objc private func addHabit() {
-        let navVC = UINavigationController(rootViewController: HabitViewController())
+        let navVC = UINavigationController(rootViewController: habitViewController)
         navVC.modalPresentationStyle = .fullScreen
         present(navVC, animated: true, completion: nil)
     }

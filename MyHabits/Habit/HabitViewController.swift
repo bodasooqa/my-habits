@@ -11,18 +11,34 @@ class HabitViewController: UIViewController {
     
     let habitView = HabitView(frame: .zero)
     
-    lazy var colorPicker: UIColorPickerViewController = {
+    var saveCompletion: (() -> Void)?
+    
+    private lazy var habitsStore: HabitsStore = .shared
+    
+    private lazy var colorPicker: UIColorPickerViewController = {
         colorPicker = UIColorPickerViewController()
         
         return colorPicker
     }()
     
-    lazy var dateFormatter: DateFormatter = {
+    private lazy var dateFormatter: DateFormatter = {
         dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .short
         
         return dateFormatter
     }()
+    
+    private var selectedTime: Date {
+        habitView.timePicker.date
+    }
+    
+    private var formattedTime: String {
+        dateFormatter.string(from: selectedTime)
+    }
+    
+    private var selectedColor: UIColor {
+        colorPicker.selectedColor
+    }
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -42,6 +58,7 @@ class HabitViewController: UIViewController {
         configureNavigationBar()
         
         colorPicker.delegate = self
+        colorPicker.selectedColor = habitView.colorButton.backgroundColor ?? .appOrange
         
         habitView.colorButton.addTarget(self, action: #selector(showColorPicker), for: .touchUpInside)
         habitView.timePicker.addTarget(self, action: #selector(setTime), for: .valueChanged)
@@ -49,8 +66,15 @@ class HabitViewController: UIViewController {
     }
     
     private func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .done, target: self, action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Сохранить", style: .done, target: self, action: #selector(save))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(dismissSelf))
+    }
+    
+    private func showErrorAlert() {
+        let alert = UIAlertController(title: "Ошибка", message: "Необходимо указать название", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Продолжить", style: .default, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
     }
     
     @objc private func dismissSelf() {
@@ -62,7 +86,19 @@ class HabitViewController: UIViewController {
     }
     
     @objc private func setTime() {
-        habitView.timeValue.text = dateFormatter.string(from: habitView.timePicker.date)
+        habitView.timeValue.text = formattedTime
+    }
+    
+    @objc private func save() {
+        guard let title = habitView.titleTextField.text, !title.isEmpty else {
+            showErrorAlert()
+            return
+        }
+        let habit = Habit(name: title, date: selectedTime, color: selectedColor)
+        habitsStore.habits.append(habit)
+        print(habitsStore.habits.count)
+        dismissSelf()
+        saveCompletion?()
     }
     
 }
@@ -70,7 +106,7 @@ class HabitViewController: UIViewController {
 extension HabitViewController: UIColorPickerViewControllerDelegate {
     
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        habitView.colorButton.backgroundColor = colorPicker.selectedColor
+        habitView.colorButton.backgroundColor = selectedColor
     }
     
 }

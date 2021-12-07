@@ -43,4 +43,8 @@ extension UILabel {
         return createLabel(with: text, size: 17, weight: .regular, color: color)
     }
     
+    static func createProgressFoonote(with text: String, color: UIColor = .systemGray) -> UILabel {
+        return createLabel(with: text, size: 13, weight: .semibold, color: color)
+    }
+    
 }
