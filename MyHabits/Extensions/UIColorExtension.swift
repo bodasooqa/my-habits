@@ -25,4 +25,8 @@ extension UIColor {
         UIColor(named: "LightGray") ?? .systemGray
     }
     
+    static var transparent: UIColor {
+        .init(white: 0, alpha: 0)
+    }
+    
 }

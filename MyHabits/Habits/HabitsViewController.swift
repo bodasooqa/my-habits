@@ -10,6 +10,7 @@ import UIKit
 class HabitsViewController: UIViewController {
     
     lazy var habitViewController: HabitViewController = HabitViewController()
+    
     lazy var habitsView: HabitsView = HabitsView()
     
     init() {
@@ -29,7 +30,7 @@ class HabitsViewController: UIViewController {
         
         habitViewController.saveCompletion = { [weak self] in
             guard let self = self else { return }
-            self.habitsView.tableView.reloadData()
+            self.habitsView.collectionView.reloadData()
         }
         
         configureNavigationBar()

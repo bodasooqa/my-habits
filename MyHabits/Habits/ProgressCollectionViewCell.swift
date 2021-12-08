@@ -7,29 +7,22 @@
 
 import UIKit
 
-class ProgressTableViewCell: UITableViewCell {
-    
+class ProgressCollectionViewCell: UICollectionViewCell {
     static let identifier: String = "progress"
-    static let spacing: CGFloat = 18
+    
+    private let spacing: CGFloat = 18
     
     var progress: Float = 0 {
         didSet(_value) {
+            print("\(Int(_value * 100))%")
             progressValue.text = "\(Int(progress * 100))%"
             progressView.setProgress(progress, animated: true)
         }
     }
     
-    lazy var progressLabel: UILabel = {
-        progressLabel = .createProgressFoonote(with: "Все получится")
-        
-        return progressLabel
-    }()
+    lazy var progressLabel: UILabel = .createProgressFoonote(with: "Все получится")
     
-    lazy var progressValue: UILabel = {
-        progressValue = .createProgressFoonote(with: "")
-        
-        return progressValue
-    }()
+    lazy var progressValue: UILabel = .createProgressFoonote()
     
     lazy var progressView: UIProgressView = {
         progressView = UIProgressView()
@@ -42,8 +35,8 @@ class ProgressTableViewCell: UITableViewCell {
         [progressLabel, progressValue, progressView]
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         configureLayout()
     }
@@ -55,11 +48,13 @@ class ProgressTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        selectionStyle = .none
-        backgroundColor = .init(white: 0, alpha: 0)
+        configureStyle()
+    }
+    
+    private func configureStyle() {
+        backgroundColor = .transparent
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 8
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: Self.spacing, left: 0, bottom: 6, right: 0))
     }
     
     private func configureLayout() {
@@ -78,6 +73,7 @@ class ProgressTableViewCell: UITableViewCell {
             progressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             progressView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             progressView.topAnchor.constraint(equalTo: progressLabel.bottomAnchor, constant: 10),
+            progressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
             progressView.heightAnchor.constraint(equalToConstant: 7),
         ])
     }

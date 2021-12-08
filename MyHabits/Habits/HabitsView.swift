@@ -15,22 +15,23 @@ class HabitsView: UIView {
         habitsStore.habits
     }
     
-    lazy var tableView: UITableView = {
-        tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.register(HabitTableViewCell.self, forCellReuseIdentifier: HabitTableViewCell.identifier)
-        tableView.register(ProgressTableViewCell.self, forCellReuseIdentifier: ProgressTableViewCell.identifier)
+    lazy var collectionView: UICollectionView = {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewLayout())
+        collectionView.backgroundColor = .transparent
         
-        return tableView
+        collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: HabitCollectionViewCell.identifier)
+        collectionView.register(ProgressCollectionViewCell.self, forCellWithReuseIdentifier: ProgressCollectionViewCell.identifier)
+        
+        return collectionView
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .appLightGray
         
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.separatorStyle = .none
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
+        configureStyle()
         configureLayout()
     }
     
@@ -38,31 +39,72 @@ class HabitsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func configureStyle() {
+        backgroundColor = .appLightGray
+    }
+    
     private func configureLayout() {
-        addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 22),
+            collectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -22),
         ])
     }
     
     @objc private func reloadTableViewData() {
-        tableView.reloadData()
+        collectionView.reloadData()
+    }
+    
+    private func configureCollectionViewLayout() -> UICollectionViewCompositionalLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(130))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(130))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 12
+        
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.interSectionSpacing = 18
+        
+        let layout = UICollectionViewCompositionalLayout(section: section, configuration: configuration)
+        
+        return layout
     }
     
 }
 
-extension HabitsView: UITableViewDelegate, UITableViewDataSource {
+extension HabitsView: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProgressCollectionViewCell.identifier, for: indexPath) as? ProgressCollectionViewCell else {
+                fatalError()
+            }
+            cell.progress = habitsStore.todayProgress
+
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HabitCollectionViewCell.identifier, for: indexPath) as? HabitCollectionViewCell else {
+                fatalError()
+            }
+            cell.set(habit: habits[indexPath.row])
+            cell.checkButton.addTarget(self, action: #selector(reloadTableViewData), for: .touchUpInside)
+
+            return cell
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
             return 1
         } else {
@@ -70,66 +112,4 @@ extension HabitsView: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if (indexPath.section == 0) {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ProgressTableViewCell.identifier) as? ProgressTableViewCell else {
-                fatalError()
-            }
-            
-            cell.progress = habitsStore.todayProgress
-            
-            return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: HabitTableViewCell.identifier) as? HabitTableViewCell else {
-                fatalError()
-            }
-            
-            cell.set(habit: habits[indexPath.row])
-            
-            cell.checkButton.addTarget(self, action: #selector(reloadTableViewData), for: .touchUpInside)
-            
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath.section == 0) {
-            return 60 + ProgressTableViewCell.spacing + 6
-        } else {
-            return 130 + HabitTableViewCell.spacing
-        }
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath.section == 0) {
-            return 60 + ProgressTableViewCell.spacing + 6
-        } else {
-            return 130 + HabitTableViewCell.spacing
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        CGFloat.leastNormalMagnitude
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        CGFloat.leastNormalMagnitude
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        CGFloat.leastNormalMagnitude
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        CGFloat.leastNormalMagnitude
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        nil
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        nil
-    }
-   
 }
