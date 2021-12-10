@@ -7,13 +7,15 @@
 
 import UIKit
 
-class HabitCollectionViewCell: UICollectionViewCell {
+class HabitCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     static let identifier: String = "habit-cell"
     
     private let habitsStore: HabitsStore = .shared
     
     private var habit: Habit?
+    
+    var delegate: HabitCollectionViewCellDelegate?
     
     lazy var titleLabel: UILabel = {
         titleLabel = .createHeadline()
@@ -34,7 +36,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+    
+        configureGesture()
         configureLayout()
     }
     
@@ -48,10 +51,23 @@ class HabitCollectionViewCell: UICollectionViewCell {
         configureStyle()
     }
     
+    private func configureGesture() {
+        let habitCellTap = UITapGestureRecognizer(target: self, action: #selector(onHabitCellTap(_:)))
+        habitCellTap.delegate = self
+        contentView.isUserInteractionEnabled = true
+        contentView.addGestureRecognizer(habitCellTap)
+    }
+    
     private func configureStyle() {
         backgroundColor = .transparent
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 8
+    }
+    
+    private func ifHabit(_ callback: () -> Void) {
+        if let _ = habit {
+            callback()
+        }
     }
     
     private func configureLayout() {
@@ -82,27 +98,35 @@ class HabitCollectionViewCell: UICollectionViewCell {
     public func set(habit: Habit) {
         self.habit = habit
         
-        guard let habit = self.habit else {
-            fatalError()
+        ifHabit {
+            titleLabel.text = habit.name
+            titleLabel.textColor = habit.color
+            captionLabel.text = "Каждый день в \(habit.date)"
+            footnoteLabel.text = "Счётчик: \(habit.trackDates.count)"
+            checkButton.setBackgroundImage(UIImage(systemName: habit.isAlreadyTakenToday ? "checkmark.circle.fill" : "circle"), for: .normal)
+            checkButton.tintColor = habit.color
+            checkButton.addTarget(self, action: #selector(track), for: .touchUpInside)
         }
-        
-        titleLabel.text = habit.name
-        titleLabel.textColor = habit.color
-        captionLabel.text = "Каждый день в \(habit.date)"
-        footnoteLabel.text = "Счётчик: \(habit.trackDates.count)"
-        checkButton.setBackgroundImage(UIImage(systemName: habit.isAlreadyTakenToday ? "checkmark.circle.fill" : "circle"), for: .normal)
-        checkButton.tintColor = habit.color
-        checkButton.addTarget(self, action: #selector(track), for: .touchUpInside)
     }
     
     @objc private func track() {
-        guard let habit = habit else {
-            fatalError()
-        }
-        
-        if !habit.isAlreadyTakenToday {
-            habitsStore.track(habit)
+        ifHabit {
+            if !habit!.isAlreadyTakenToday {
+                habitsStore.track(habit!)
+            }
         }
     }
+    
+    @objc private func onHabitCellTap(_ sender: UITapGestureRecognizer) {
+        ifHabit {
+            delegate?.onHabitCellTap(habit!)
+        }
+    }
+    
+}
+
+protocol HabitCollectionViewCellDelegate {
+    
+    func onHabitCellTap(_ habit: Habit)
     
 }

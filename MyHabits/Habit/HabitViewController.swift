@@ -13,13 +13,33 @@ class HabitViewController: UIViewController {
     
     var saveCompletion: (() -> Void)?
     
+    var isEdit: Bool = false {
+        didSet(_value) {
+            title = isEdit ? "Править" : "Создать"
+            habitView.removeButton.isHidden = !isEdit
+        }
+    }
+    
+    var habit: Habit? = nil {
+        didSet(_value) {
+            if let habit = habit {
+                habitView.titleTextField.text = habit.name
+                habitView.colorButton.backgroundColor = habit.color
+                colorPicker.selectedColor = habit.color
+                habitView.timeValue.text = dateFormatter.string(from: habit.date)
+                habitView.timePicker.date = habit.date
+            } else {
+                let date = Date()
+                habitView.titleTextField.text = ""
+                habitView.timeValue.text = dateFormatter.string(from: date)
+                habitView.timePicker.date = date
+            }
+        }
+    }
+    
     private lazy var habitsStore: HabitsStore = .shared
     
-    private lazy var colorPicker: UIColorPickerViewController = {
-        colorPicker = UIColorPickerViewController()
-        
-        return colorPicker
-    }()
+    private lazy var colorPicker: UIColorPickerViewController = UIColorPickerViewController()
     
     private lazy var dateFormatter: DateFormatter = {
         dateFormatter = DateFormatter()
@@ -42,8 +62,7 @@ class HabitViewController: UIViewController {
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = .white
-        title = "Создать"
+        configureStyle()
     }
     
     required init?(coder: NSCoder) {
@@ -52,16 +71,23 @@ class HabitViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureLayout()
+        configureNavigationBar()
+        configureColorPicker()
+        configureElements()
+    }
+    
+    private func configureLayout() {
         view.addSubview(habitView)
         habitView.putIntoSafeArea(view: view)
-        
-        configureNavigationBar()
-        
-        colorPicker.delegate = self
-        colorPicker.selectedColor = habitView.colorButton.backgroundColor ?? .appOrange
-        
+    }
+    
+    private func configureElements() {
+        habitView.removeButton.isHidden = !isEdit
         habitView.colorButton.addTarget(self, action: #selector(showColorPicker), for: .touchUpInside)
         habitView.timePicker.addTarget(self, action: #selector(setTime), for: .valueChanged)
+        habitView.removeButton.addTarget(self, action: #selector(removeHabit), for: .touchUpInside)
         setTime()
     }
     
@@ -70,15 +96,50 @@ class HabitViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(dismissSelf))
     }
     
+    private func configureColorPicker() {
+        colorPicker.delegate = self
+        colorPicker.selectedColor = habitView.colorButton.backgroundColor ?? .appOrange
+    }
+    
+    private func configureStyle() {
+        view.backgroundColor = .white
+        title = isEdit ? "Править" : "Создать"
+    }
+    
+    private func createAlert(title: String, message: String, actionLabel: String, action: ((UIAlertAction) -> Void)? = nil) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: actionLabel, style: .default, handler: action))
+        
+        return alert
+    }
+    
     private func showErrorAlert() {
         let alert = UIAlertController(title: "Ошибка", message: "Необходимо указать название", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Продолжить", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Продолжить", style: .default))
         
-        present(alert, animated: true, completion: nil)
+        present(alert, animated: true)
+    }
+    
+    private func showRemoveHabitAlert() {
+        if let habit = habit {
+            let alert = UIAlertController(title: "Удалить привычку", message: "Вы хотите удалить привычку \"\(habit.name)\"?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Отмена", style: .default))
+            alert.addAction(UIAlertAction(title: "Удалить", style: .destructive, handler: { _ in
+                self.removeHabitHandler()
+            }))
+            
+            present(alert, animated: true)
+        }
+    }
+    
+    private func removeHabitHandler() {
+        habitsStore.habits.removeAll { $0.name == habit?.name }
+        dismissSelf()
     }
     
     @objc private func dismissSelf() {
         dismiss(animated: true, completion: nil)
+        saveCompletion?()
     }
     
     @objc private func showColorPicker() {
@@ -94,11 +155,14 @@ class HabitViewController: UIViewController {
             showErrorAlert()
             return
         }
+        
         let habit = Habit(name: title, date: selectedTime, color: selectedColor)
         habitsStore.habits.append(habit)
-        print(habitsStore.habits.count)
         dismissSelf()
-        saveCompletion?()
+    }
+    
+    @objc private func removeHabit() {
+        showRemoveHabitAlert()
     }
     
 }

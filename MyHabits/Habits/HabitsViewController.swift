@@ -25,15 +25,20 @@ class HabitsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(habitsView)
-        habitsView.putIntoSafeArea(view: view)
+        configureLayout()
+        configureNavigationBar()
         
+        habitsView.delegate = self
         habitViewController.saveCompletion = { [weak self] in
             guard let self = self else { return }
             self.habitsView.collectionView.reloadData()
+            self.habitsView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
-        
-        configureNavigationBar()
+    }
+    
+    private func configureLayout() {
+        view.addSubview(habitsView)
+        habitsView.putIntoSafeArea(view: view)
     }
     
     private func configureNavigationBar() {
@@ -43,10 +48,31 @@ class HabitsViewController: UIViewController {
         navigationController?.navigationBar.topItem?.title = "Сегодня"
     }
     
-    @objc private func addHabit() {
+    private func openHabitView(with habit: Habit? = nil) {
         let navVC = UINavigationController(rootViewController: habitViewController)
+        
+        if let habit = habit {
+            habitViewController.isEdit = true
+            habitViewController.habit = habit
+        } else {
+            habitViewController.isEdit = false
+            habitViewController.habit = nil
+        }
+        
         navVC.modalPresentationStyle = .fullScreen
         present(navVC, animated: true, completion: nil)
+    }
+    
+    @objc private func addHabit() {
+        openHabitView()
+    }
+    
+}
+
+extension HabitsViewController: HabitsViewDelegate {
+    
+    func onHabitCellTap(_ habit: Habit) {
+        openHabitView(with: habit)
     }
     
 }

@@ -9,11 +9,15 @@ import UIKit
 
 class HabitsView: UIView {
     
+    lazy var habitViewController: HabitViewController = HabitViewController()
+    
     lazy var habitsStore: HabitsStore = .shared
     
     var habits: [Habit] {
         habitsStore.habits
     }
+    
+    var delegate: HabitsViewDelegate?
     
     lazy var collectionView: UICollectionView = {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewLayout())
@@ -98,6 +102,7 @@ extension HabitsView: UICollectionViewDelegate, UICollectionViewDataSource {
             }
             cell.set(habit: habits[indexPath.row])
             cell.checkButton.addTarget(self, action: #selector(reloadTableViewData), for: .touchUpInside)
+            cell.delegate = self
 
             return cell
         }
@@ -111,5 +116,19 @@ extension HabitsView: UICollectionViewDelegate, UICollectionViewDataSource {
             return habits.count
         }
     }
+    
+}
+
+extension HabitsView: HabitCollectionViewCellDelegate {
+    
+    func onHabitCellTap(_ habit: Habit) {
+        delegate?.onHabitCellTap(habit)
+    }
+    
+}
+
+protocol HabitsViewDelegate {
+    
+    func onHabitCellTap(_ habit: Habit) 
     
 }

@@ -14,7 +14,6 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     
     var progress: Float = 0 {
         didSet(_value) {
-            print("\(Int(_value * 100))%")
             progressValue.text = "\(Int(progress * 100))%"
             progressView.setProgress(progress, animated: true)
         }

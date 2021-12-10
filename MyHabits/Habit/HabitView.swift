@@ -40,21 +40,26 @@ class HabitView: UIView {
         return timePicker
     }()
     
-    lazy var timeLabel: UILabel = {
-        timeLabel = .createBody(with: "Каждый день в ")
-        
-        return timeLabel
-    }()
+    lazy var timeLabel: UILabel = .createBody(with: "Каждый день в ")
     
     lazy var timeValue: UILabel = {
-        timeValue = .createBody(with: "??")
+        timeValue = .createBody()
         timeValue.textColor = .appPurple
         
         return timeValue
     }()
     
+    lazy var removeButton: UIButton = {
+        removeButton = UIButton()
+        removeButton.setTitle("Удалить привычку", for: .normal)
+        removeButton.titleLabel?.font = .systemFont(ofSize: 17)
+        removeButton.setTitleColor(.systemRed, for: .normal)
+        
+        return removeButton
+    }()
+    
     var subViews: [UIView] {
-        [titleProp, titleTextField, colorProp, colorButton, timeProp, timeLabel, timeValue, timePicker]
+        [titleProp, titleTextField, colorProp, colorButton, timeProp, timeLabel, timeValue, timePicker, removeButton]
     }
     
     override init(frame: CGRect) {
@@ -101,7 +106,10 @@ class HabitView: UIView {
             
             timePicker.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             timePicker.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            timePicker.topAnchor.constraint(equalTo: timeProp.bottomAnchor, constant: 35)
+            timePicker.topAnchor.constraint(equalTo: timeProp.bottomAnchor, constant: 35),
+            
+            removeButton.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
+            removeButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -18)
         ])
     }
     
