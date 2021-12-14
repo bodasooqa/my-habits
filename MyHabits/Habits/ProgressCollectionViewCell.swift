@@ -16,10 +16,11 @@ class ProgressCollectionViewCell: UICollectionViewCell {
         didSet(_value) {
             progressValue.text = "\(Int(progress * 100))%"
             progressView.setProgress(progress, animated: true)
+            setProgressLabel()
         }
     }
     
-    lazy var progressLabel: UILabel = .createProgressFoonote(with: "Все получится")
+    lazy var progressLabel: UILabel = .createProgressFoonote()
     
     lazy var progressValue: UILabel = .createProgressFoonote()
     
@@ -75,6 +76,18 @@ class ProgressCollectionViewCell: UICollectionViewCell {
             progressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
             progressView.heightAnchor.constraint(equalToConstant: 7),
         ])
+    }
+    
+    private func setProgressLabel() {
+        if (progress < 0.25) {
+            progressLabel.text = "Все получится"
+        } else if (progress < 0.5) {
+            progressLabel.text = "Хороший старт"
+        } else if (progress < 1) {
+            progressLabel.text = "Почти готово"
+        } else {
+            progressLabel.text = "Молодец :)"
+        }
     }
     
 }
