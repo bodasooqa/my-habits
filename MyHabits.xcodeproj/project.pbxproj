@@ -27,6 +27,7 @@
 		C2272C35275AC1F5005C3CF4 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C34275AC1F4005C3CF4 /* UIColorExtension.swift */; };
 		C2272C37275ADF25005C3CF4 /* ProgressCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C36275ADF25005C3CF4 /* ProgressCollectionViewCell.swift */; };
 		C2272C3B276379B2005C3CF4 /* HabitDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C3A276379B1005C3CF4 /* HabitDetailsViewController.swift */; };
+		C2272C3D27691F15005C3CF4 /* TrackDateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2272C3C27691F15005C3CF4 /* TrackDateTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		C2272C34275AC1F4005C3CF4 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		C2272C36275ADF25005C3CF4 /* ProgressCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCollectionViewCell.swift; sourceTree = "<group>"; };
 		C2272C3A276379B1005C3CF4 /* HabitDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsViewController.swift; sourceTree = "<group>"; };
+		C2272C3C27691F15005C3CF4 /* TrackDateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDateTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				C2272C3A276379B1005C3CF4 /* HabitDetailsViewController.swift */,
+				C2272C3C27691F15005C3CF4 /* TrackDateTableViewCell.swift */,
 			);
 			path = HabitDetails;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2272C0B2754E553005C3CF4 /* ViewController.swift in Sources */,
+				C2272C3D27691F15005C3CF4 /* TrackDateTableViewCell.swift in Sources */,
 				C2272C2327556BB4005C3CF4 /* HabitsView.swift in Sources */,
 				C2272C3B276379B2005C3CF4 /* HabitDetailsViewController.swift in Sources */,
 				C2272C35275AC1F5005C3CF4 /* UIColorExtension.swift in Sources */,

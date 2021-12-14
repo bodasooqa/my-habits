@@ -9,8 +9,6 @@ import UIKit
 
 class HabitDetailsViewController: UIViewController {
     
-    private let tableViewCellIdentifier: String = "table-view-cell"
-    
     var habitViewController: HabitViewController?
     
     let habitsStore = HabitsStore.shared
@@ -28,14 +26,6 @@ class HabitDetailsViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var dateFormatter: DateFormatter = {
-        dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-        dateFormatter.locale = Locale(identifier: "RU")
-        
-        return dateFormatter
-    }()
-    
     override func viewDidLoad() {
         configureTableView()
         configureLayout()
@@ -43,12 +33,14 @@ class HabitDetailsViewController: UIViewController {
         configureStyle()
         
         let oldSaveCompletion = habitViewController?.saveCompletion
-        habitViewController?.saveCompletion = { Bool in
-            oldSaveCompletion?(false)
-            if let habitIndex = self.habitIndex {
-                self.habit = self.habitsStore.habits[habitIndex]
-                (self.navigationItem.titleView as! UILabel).text = self.habit?.name
-                self.habitsStore.save()
+        habitViewController?.saveCompletion = {
+            if let toStart = $0 {
+                oldSaveCompletion?(toStart)
+                if let habitIndex = self.habitIndex, !toStart {
+                    self.habit = self.habitsStore.habits[habitIndex]
+                    (self.navigationItem.titleView as! UILabel).text = self.habit?.name
+                    self.habitsStore.save()
+                }
             }
         }
     }
@@ -63,7 +55,7 @@ class HabitDetailsViewController: UIViewController {
     }
     
     private func configureTableView() {
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: tableViewCellIdentifier)
+        tableView.register(TrackDateTableViewCell.self, forCellReuseIdentifier: TrackDateTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -102,29 +94,15 @@ extension HabitDetailsViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: tableViewCellIdentifier, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TrackDateTableViewCell.identifier, for: indexPath) as? TrackDateTableViewCell else {
+            fatalError()
+        }
         
-        cell.textLabel?.text = getDateString(from: trackDates[indexPath.row])
-        if let habit = habit, habitsStore.habit(habit, isTrackedIn: trackDates[indexPath.row]) {
-            cell.accessoryView = UIImageView(image: .init(systemName: "checkmark"))
+        if let habit = habit {
+            cell.set(date: trackDates[indexPath.row], habit: habit)
         }
         
         return cell
-    }
-    
-    private func getDateString(from date: Date) -> String {
-        var dateString = dateFormatter.string(from: date)
-        let now = Date.now
-        
-        if dateString == dateFormatter.string(from: now) {
-            dateString = "Сегодня"
-        } else if dateString == dateFormatter.string(from: Calendar.current.date(byAdding: .day, value: -1, to: now)!) {
-            dateString = "Вчера"
-        } else if dateString == dateFormatter.string(from: Calendar.current.date(byAdding: .day, value: -2, to: now)!) {
-            dateString = "Позавчера"
-        }
-        
-        return dateString
     }
     
 }
