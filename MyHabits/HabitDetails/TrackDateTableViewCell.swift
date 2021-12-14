@@ -31,7 +31,7 @@ class TrackDateTableViewCell: UITableViewCell {
         configureCell()
     }
     
-    func configureCell() {
+    private func configureCell() {
         if let date = date {
             textLabel?.text = getDateString(from: date)
             

@@ -22,6 +22,7 @@ class HabitsView: UIView {
     lazy var collectionView: UICollectionView = {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewLayout())
         collectionView.backgroundColor = .transparent
+        collectionView.showsVerticalScrollIndicator = false
         
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: HabitCollectionViewCell.identifier)
         collectionView.register(ProgressCollectionViewCell.self, forCellWithReuseIdentifier: ProgressCollectionViewCell.identifier)

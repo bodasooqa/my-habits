@@ -25,7 +25,6 @@ class InfoViewController: UIViewController {
         
         view.addSubview(infoView)
         infoView.putIntoSafeArea(view: view)
-        
     }
     
 }

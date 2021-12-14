@@ -9,11 +9,11 @@ import UIKit
 
 class InfoView: UIView {
     
-    lazy var scrollView = UIScrollView()
+    private lazy var scrollView = UIScrollView()
     
-    lazy var titleLabel: UILabel = .createTitle3(with: "Привычка за 21 день")
+    private lazy var titleLabel: UILabel = .createTitle3(with: "Привычка за 21 день")
     
-    lazy var textLabel: UILabel = {
+    private lazy var textLabel: UILabel = {
         let text = "Прохождение этапов, за которые за 21 день вырабатывается привычка, подчиняется следующему алгоритму \n\n"
             .appending("1. Провести 1 день без обращения к старым привычкам, стараться вести себя так, как будто цель, загаданная в перспективу, находится на расстоянии шага. \n\n")
             .appending("2. Выдержать 2 дня в прежнем состоянии самоконтроля.\n\n")
@@ -26,7 +26,7 @@ class InfoView: UIView {
         return textLabel
     }()
     
-    var subViews: [UIView] {
+    private var subViews: [UIView] {
         [scrollView, titleLabel]
     }
     
