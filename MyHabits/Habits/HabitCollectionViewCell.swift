@@ -14,6 +14,7 @@ class HabitCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDelegate
     private let habitsStore: HabitsStore = .shared
     
     private var habit: Habit?
+    private var habitIndex: Int?
     
     var delegate: HabitCollectionViewCellDelegate?
     
@@ -95,13 +96,14 @@ class HabitCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDelegate
         ])
     }
     
-    public func set(habit: Habit) {
+    public func set(habit: Habit, index: Int) {
         self.habit = habit
+        habitIndex = index
         
         ifHabit {
             titleLabel.text = habit.name
             titleLabel.textColor = habit.color
-            captionLabel.text = "Каждый день в \(habit.date)"
+            captionLabel.text = "\(habit.dateString)"
             footnoteLabel.text = "Счётчик: \(habit.trackDates.count)"
             checkButton.setBackgroundImage(UIImage(systemName: habit.isAlreadyTakenToday ? "checkmark.circle.fill" : "circle"), for: .normal)
             checkButton.tintColor = habit.color
@@ -119,7 +121,7 @@ class HabitCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDelegate
     
     @objc private func onHabitCellTap(_ sender: UITapGestureRecognizer) {
         ifHabit {
-            delegate?.onHabitCellTap(habit!)
+            delegate?.onHabitCellTap(habit!, index: habitIndex!)
         }
     }
     
@@ -127,6 +129,6 @@ class HabitCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDelegate
 
 protocol HabitCollectionViewCellDelegate {
     
-    func onHabitCellTap(_ habit: Habit)
+    func onHabitCellTap(_ habit: Habit, index: Int)
     
 }

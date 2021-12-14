@@ -11,7 +11,7 @@ class HabitViewController: UIViewController {
     
     let habitView = HabitView(frame: .zero)
     
-    var saveCompletion: (() -> Void)?
+    var saveCompletion: ((_ toStart: Bool?) -> Void)?
     
     var isEdit: Bool = false {
         didSet(_value) {
@@ -36,6 +36,7 @@ class HabitViewController: UIViewController {
             }
         }
     }
+    var habitIndex: Int?
     
     private lazy var habitsStore: HabitsStore = .shared
     
@@ -134,12 +135,12 @@ class HabitViewController: UIViewController {
     
     private func removeHabitHandler() {
         habitsStore.habits.removeAll { $0.name == habit?.name }
-        dismissSelf()
+        dismissSelf(toStart: true)
     }
     
-    @objc private func dismissSelf() {
+    @objc private func dismissSelf(toStart: Bool = false) {
         dismiss(animated: true, completion: nil)
-        saveCompletion?()
+        saveCompletion?(toStart)
     }
     
     @objc private func showColorPicker() {
@@ -157,7 +158,17 @@ class HabitViewController: UIViewController {
         }
         
         let habit = Habit(name: title, date: selectedTime, color: selectedColor)
-        habitsStore.habits.append(habit)
+        
+        if isEdit {
+            if let habitIndex = habitIndex {
+                habitsStore.habits[habitIndex].name = habit.name
+                habitsStore.habits[habitIndex].date = habit.date
+                habitsStore.habits[habitIndex].color = habit.color
+            }
+        } else {
+            habitsStore.habits.append(habit)
+        }
+        
         dismissSelf()
     }
     

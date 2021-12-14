@@ -32,15 +32,18 @@ class HabitsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        
+        configureCollectionView()
         configureStyle()
         configureLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
     }
     
     private func configureStyle() {
@@ -100,7 +103,7 @@ extension HabitsView: UICollectionViewDelegate, UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HabitCollectionViewCell.identifier, for: indexPath) as? HabitCollectionViewCell else {
                 fatalError()
             }
-            cell.set(habit: habits[indexPath.row])
+            cell.set(habit: habits[indexPath.row], index: indexPath.row)
             cell.checkButton.addTarget(self, action: #selector(reloadTableViewData), for: .touchUpInside)
             cell.delegate = self
 
@@ -121,14 +124,14 @@ extension HabitsView: UICollectionViewDelegate, UICollectionViewDataSource {
 
 extension HabitsView: HabitCollectionViewCellDelegate {
     
-    func onHabitCellTap(_ habit: Habit) {
-        delegate?.onHabitCellTap(habit)
+    func onHabitCellTap(_ habit: Habit, index: Int) {
+        delegate?.onHabitCellTap(habit, index: index)
     }
     
 }
 
 protocol HabitsViewDelegate {
     
-    func onHabitCellTap(_ habit: Habit) 
+    func onHabitCellTap(_ habit: Habit, index: Int)
     
 }

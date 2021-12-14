@@ -40,7 +40,7 @@ class HabitView: UIView {
         return timePicker
     }()
     
-    lazy var timeLabel: UILabel = .createBody(with: "Каждый день в ")
+    lazy var timeLabel: UILabel = .createBody()
     
     lazy var timeValue: UILabel = {
         timeValue = .createBody()
